@@ -36,23 +36,18 @@
     let target = { ...datos };
 
     async function fetchDatos() {
-      try {
-        const resultados = await Promise.all(
-          Object.entries(SENSORES).map(async ([nombre, id]) => {
-            const res = await fetch(
-              `https://api.openaq.org/v3/sensors/${id}/measurements?limit=1`,
-              { headers: { 'X-API-Key': API_KEY } }
-            );
-            const json = await res.json();
-            return [nombre, json.results[0].value];
-          })
-        );
-        resultados.forEach(([k, v]) => target[k] = v);
-        actualizarInfo();
-      } catch(e) {
-        console.log('usando datos de fallback', e);
-      }
-    }
+  try {
+    const res = await fetch('aire.json');
+    const json = await res.json();
+    target.pm25 = json.pm25;
+    target.no2  = json.no2;
+    target.o3   = json.o3;
+    target.pm10 = json.pm10;
+    actualizarInfo();
+  } catch(e) {
+    console.log('usando datos de fallback', e);
+  }
+}
 
     function actualizarInfo() {
       document.getElementById('info').innerHTML =
